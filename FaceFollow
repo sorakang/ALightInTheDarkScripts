@@ -1,0 +1,55 @@
+using UnityEngine;
+
+public class FaceFollow : MonoBehaviour
+{
+    [Header("Main Camera:")]
+    public Camera m_camera;
+
+    [Header("Transform Ref:")]
+    public Transform faceHolder;
+    public Transform facePivot;
+
+    [Header("Physics Ref:")]
+    public Rigidbody2D m_rigidbody;
+
+    [Header("Rotation:")]
+    [SerializeField] private bool rotateOverTime = true;
+    [Range(0, 60)] [SerializeField] private float rotationSpeed = 30;
+
+    private void Start()
+    {
+        m_camera = Camera.main;
+    }
+
+    private void Update()
+    {
+        //sets variable for mouse position on screen
+        Vector2 mousePos = m_camera.ScreenToWorldPoint(Input.mousePosition);
+        RotateFace(mousePos, true);
+
+        // Vector2 newPosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+        // transform.position = Vector2.Lerp(transform.position, newPosition, 0.5f);
+    }
+
+    void RotateFace(Vector3 lookPoint, bool allowRotationOverTime)
+    {
+        Vector3 distanceVector = lookPoint - facePivot.position;
+
+        // var rotation = transform.rotation;
+        //     transform.RotateAround(center.position, Vector3.forward, rotationSpeed * Time.deltaTime);
+        //     transform.rotation = rotation;
+
+        //sets the angle from object to mouse position
+        float angle = Mathf.Atan2(distanceVector.y, distanceVector.x) * Mathf.Rad2Deg;
+        if (rotateOverTime && allowRotationOverTime)
+        {
+            //lower the rotation speed, slower the face catches up to your mouse
+            facePivot.rotation = Quaternion.Lerp(facePivot.rotation, Quaternion.AngleAxis(angle, Vector3.forward), Time.deltaTime * rotationSpeed);
+        }
+        else
+        {
+            //rotates the face with cursor
+            facePivot.rotation = Quaternion.AngleAxis(angle, Vector3.forward);
+        }
+    }
+}

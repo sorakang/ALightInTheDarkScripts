@@ -12,59 +12,137 @@ public class Enemy : MonoBehaviour
     public float startWaitTime;
     public float distance;
 
-    public Transform[] moveSpots;
-    private int randomSpot;
+    // private Transform[] moveSpots;
+    // private int randomSpot;
 
     private Transform target;
 
-    // Start is called before the first frame update
-    void Start()
+    private Rigidbody2D rigidbody;
+    public SpriteRenderer spriteRenderer;
+
+    private Coroutine roaming = null;
+    private float left, right;
+
+    public bool isFacingLeft;
+    public bool spawnFacingLeft;
+    private Vector2 facingLeft;
+
+    // protected virtual void Initialization()
+    // {
+    
+    //     if(spawnFacingLeft)
+    //     {
+    //         transform.localScale = facingLeft;
+    //         isFacingLeft = true;
+    //     }
+    // }
+
+    private void Awake()
     {
-        //sets player as target
-        target = GameObject.FindGameObjectWithTag("Player").GetComponent<Transform>();
+        rigidbody = GetComponent<Rigidbody2D>();
 
-        //sets range for AI to move randomly
-        randomSpot = Random.Range(0, moveSpots.Length);
-        waitTime = startWaitTime;
-
-        //finding error for mission comma?
-        //setting distance between player position and enemy position
-        // distance = Vector3.Distance(GameObject.FindGameObjectWithTag("Player").transform.position.x, GameObject.FindGameObjectWithTag("Enemy").transform.position.x);
+        SetNewDistances();
     }
 
-    // Update is called once per frame
-    void Update()
+    void Start()
     {
-        if(LightRender.on = true || (GameObject.FindGameObjectWithTag("Player").transform.position-this.transform.position).sqrMagnitude<3*3)
+        spawnFacingLeft = true;
+
+        target = GameObject.FindGameObjectWithTag("Player").transform;
+
+        // randomSpot = Random.Range(0, moveSpots.Length);
+        // waitTime = startWaitTime;
+    }
+
+    // protected virtual void Flip()
+    // {
+    //     if (isFacingLeft)
+    //     {
+    //     }
+    //     if (!isFacingLeft)
+    //     {
+    //     }
+    // }
+
+    // Update is called once per frame
+    void FixedUpdate()
+    {
+        var targetLeft = target.position.x < rigidbody.position.x;
+
+        if (targetLeft)
         {
-            if((GameObject.FindGameObjectWithTag("Player").transform.position-this.transform.position).sqrMagnitude<3*3)
+            spriteRenderer.flipX = false;
+
+        }
+        if (!targetLeft)
+        {
+            spriteRenderer.flipX = true;
+            FlipSprite();
+        }
+
+
+        if (target != null)
+        {
+            if ((flash.on && Vector2.Distance(target.position, transform.position) <= 17) || Vector2.Distance(target.position, transform.position) <= 3)
             {
-                //begin chasing after player
-                transform.position = Vector2.MoveTowards(transform.position, target.position, speedChase * Time.deltaTime);
+                rigidbody.position = Vector2.MoveTowards(rigidbody.position, new Vector2(target.position.x, rigidbody.position.y), speedChase * Time.deltaTime);
             }
             else
             {
-                transform.position = Vector2.MoveTowards(transform.position, moveSpots[randomSpot].position, speedRoam * Time.deltaTime);
+                if (roaming == null)
+                {
+                    roaming = StartCoroutine(MoveToNextSpot());
+                }
             }
         }
         else
         {
-            //moves AI from current position to random position with speed
-            transform.position = Vector2.MoveTowards(transform.position, moveSpots[randomSpot].position, speedRoam * Time.deltaTime);
-
-            //if close to random spot, move to new random spot
-            if(Vector2.Distance(transform.position, moveSpots[randomSpot].position) < 0.2f)
-            {
-                if (waitTime <= 0)
-                {
-                    randomSpot = Random.Range(0, moveSpots.Length);
-                    waitTime = startWaitTime;
-                }
-                else
-                {
-                    waitTime -= Time.deltaTime;
-                }
-            }
+            target = GameObject.FindGameObjectWithTag("Player").transform;
+            flash = GameObject.FindObjectOfType<LightRender>();
         }
     }
+
+    private IEnumerator MoveToNextSpot()
+    {
+        float destination = Random.Range(left, right);
+
+        while (rigidbody.position.x != destination)
+        {
+            rigidbody.position = Vector2.MoveTowards(rigidbody.position, new Vector2(destination, rigidbody.position.y), speedRoam * Time.deltaTime);
+
+            yield return new WaitForEndOfFrame();
+        }
+
+        yield return new WaitForSeconds(startWaitTime);
+
+        roaming = null;
+    }
+
+    private void SetNewDistances()
+    {
+        left = rigidbody.position.x - distance;
+        right = rigidbody.position.x + distance;
+
+        // RoamFlip();
+    }
+
+    private void FlipSprite()
+    {
+        transform.localScale = new Vector3(-transform.localScale.x, transform.localScale.y, transform.localScale.z);
+    }
+
+    // private void RoamFlip()
+    // {
+    //     if (target = null)
+    //     {
+    //         if (left < right)
+    //         {
+    //             spriteRenderer.flipX = true;
+    //         }
+    //         if (right > left)
+    //         {
+    //             spriteRenderer.flipX = false;
+    //         }
+    //     }
+    // }
 }

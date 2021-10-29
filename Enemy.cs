@@ -77,7 +77,6 @@ public class Enemy : MonoBehaviour
         if (!targetLeft)
         {
             spriteRenderer.flipX = true;
-            FlipSprite();
         }
 
 
@@ -126,10 +125,10 @@ public class Enemy : MonoBehaviour
         // RoamFlip();
     }
 
-    private void FlipSprite()
-    {
-        transform.localScale = new Vector3(-transform.localScale.x, transform.localScale.y, transform.localScale.z);
-    }
+    // private void FlipSprite()
+    // {
+    //     transform.localScale = new Vector3(-transform.localScale.x, transform.localScale.y, transform.localScale.z);
+    // }
 
     // private void RoamFlip()
     // {

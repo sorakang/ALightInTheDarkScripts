@@ -22,10 +22,11 @@ public class Enemy : MonoBehaviour
 
     private Coroutine roaming = null;
     private float left, right;
+    
 
-    public bool isFacingLeft;
-    public bool spawnFacingLeft;
-    private Vector2 facingLeft;
+    // public bool isFacingLeft;
+    // public bool spawnFacingLeft;
+    // private Vector2 facingLeft;
 
     // protected virtual void Initialization()
     // {
@@ -46,7 +47,7 @@ public class Enemy : MonoBehaviour
 
     void Start()
     {
-        spawnFacingLeft = true;
+        // spawnFacingLeft = true;
 
         target = GameObject.FindGameObjectWithTag("Player").transform;
 
@@ -67,17 +68,17 @@ public class Enemy : MonoBehaviour
     // Update is called once per frame
     void FixedUpdate()
     {
-        var targetLeft = target.position.x < rigidbody.position.x;
+        // var targetLeft = target.position.x < rigidbody.position.x;
 
-        if (targetLeft)
-        {
-            spriteRenderer.flipX = false;
+        // if (targetLeft)
+        // {
+        //     spriteRenderer.flipX = false;
 
-        }
-        if (!targetLeft)
-        {
-            spriteRenderer.flipX = true;
-        }
+        // }
+        // if (!targetLeft)
+        // {
+        //     spriteRenderer.flipX = true;
+        // }
 
 
         if (target != null)

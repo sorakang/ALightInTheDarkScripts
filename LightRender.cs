@@ -5,7 +5,7 @@ using UnityEngine;
 public class LightRender : MonoBehaviour
 {
     public GameObject light2d;
-    public static bool on = false;
+    public bool on = false;
     
     float startTime = 0f;
     float holdTime = 5f;

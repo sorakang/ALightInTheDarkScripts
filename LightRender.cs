@@ -8,7 +8,7 @@ public class LightRender : MonoBehaviour
     public bool on = false;
     
     float startTime = 0f;
-    float holdTime = 5f;
+    // float holdTime = 5f;
     // float startWaitTime = 0f;
     // float waitTime = 5.0f;
     // bool wait = false;
@@ -21,7 +21,7 @@ public class LightRender : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.Space))
         {
             //starts timer
-            startTime = Time.time;
+            // startTime = Time.time;
         }
 
         //while holding space
@@ -31,18 +31,19 @@ public class LightRender : MonoBehaviour
             on = true;
             
             //after x seconds, light turns off
-            if (startTime + holdTime <= Time.time)
-            {
-            light2d.SetActive(false);
-            on = false;
+            // if (startTime + holdTime <= Time.time)
+            // {
+            // light2d.SetActive(false);
+            // on = false;
             // wait = true;
             // startWaitTime = Time.time;
-            }
+            // }
         }
         else
         {
         light2d.SetActive(false);
         on = false;
+        }
             // while (wait = true)
             // {
             //     if (startTime + waitTime <= Time.time)
@@ -57,6 +58,5 @@ public class LightRender : MonoBehaviour
             //         }
             //     }
             // }
-        }
     }
 }

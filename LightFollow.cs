@@ -18,7 +18,7 @@ public class LightFollow : MonoBehaviour
 
     private void Start()
     {
-
+        m_camera = Camera.main;
     }
 
     private void Update()
@@ -26,6 +26,9 @@ public class LightFollow : MonoBehaviour
         //sets variable for mouse position on screen
         Vector2 mousePos = m_camera.ScreenToWorldPoint(Input.mousePosition);
         RotateLight(mousePos, true);
+
+        // Vector2 newPosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+        // transform.position = Vector2.Lerp(transform.position, newPosition, 0.5f);
     }
 
     void RotateLight(Vector3 lookPoint, bool allowRotationOverTime)

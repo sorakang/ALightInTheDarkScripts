@@ -11,6 +11,9 @@ public class GrappleInputManager : MonoBehaviour {
 	 * i.e 90 means 90 degrees clockwise + 90 counter clockwise.*/
 	[Range(0.0f,360.0f)]
 	public float angleTolerance = 90;
+
+	float startTime = 0f;
+    float holdTime = 3f;
 	
 	void Start()
 	{
@@ -20,10 +23,18 @@ public class GrappleInputManager : MonoBehaviour {
 	
 	void Update()
 	{
+        if (Input.GetMouseButtonDown(0))
+        {
+            //starts timer
+			//start timer not being recognized on click of button
+            startTime = Time.time;
+			// Debug.Log("Start Timer");
+        }
 		UpdateInput();
 	}
 	
-	private void UpdateInput () {
+	private void UpdateInput () 
+	{
 		if(Input.GetMouseButton(0))
 		{
 			// Find mouse position
@@ -48,23 +59,36 @@ public class GrappleInputManager : MonoBehaviour {
 				rot = Quaternion.AngleAxis(-angle , Vector3.forward);
 				hit = Physics2D.Raycast((Vector2)this.transform.position , rot*rayDirection, grapple.grapplingHookRange, ~(1<<grapple.playerLayer));
 				angle+=angleStep;
-				
 			}
+
 			// if something is hit, and that is not the player
 			if(hit.collider != null && hit.collider.gameObject.layer != grapple.playerLayer )
 			{
-				grapple.AttachRope(hit.point);
+				if (startTime + holdTime < Time.time)
+				{
+					// Debug.Log("Timer Release Rope");
+					grapple.ReleaseRope();
+				}
+				else
+				{
+					// Debug.Log("Launch");
+					grapple.AttachRope(hit.point);
+				}
 			}
 		}
 		// Check for rope release
 		else if(Input.GetMouseButtonUp(0))
 		{
+			// Debug.Log("Manual Release Rope");
 			grapple.ReleaseRope();
 		}
 
 		// Setting reeling and paying out
 		grapple.reeling_in = Input.GetKey(KeyCode.Z);
 		grapple.paying_out = Input.GetKey(KeyCode.X);
+
+	
+			
 
 	}
 }
